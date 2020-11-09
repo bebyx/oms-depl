@@ -13,7 +13,6 @@ resource "aws_instance" "oms" {
 
 }
 
-/*
 resource "null_resource" "provision" {
   connection {
     type = "ssh"
@@ -23,10 +22,6 @@ resource "null_resource" "provision" {
   }
 
   provisioner "remote-exec" {
-    inline = [
-      "sudo dnf install vim -y"
-    ]
-//    script = file()
+    script = "./provision.sh"
   }
 }
-*/
