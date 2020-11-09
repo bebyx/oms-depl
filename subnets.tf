@@ -40,7 +40,7 @@ resource "aws_subnet" "rds-subnet2" {
 }
 
 
-resource "aws_db_subnet_group" "default" {
+resource "aws_db_subnet_group" "oms-db" {
   name = "main"
   subnet_ids = [ aws_subnet.rds-subnet1.id, aws_subnet.rds-subnet2.id ]
 }

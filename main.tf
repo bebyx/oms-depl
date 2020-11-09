@@ -44,3 +44,7 @@ output "public_ip" {
 output "private_ip" {
   value = aws_instance.oms.private_ip
 }
+
+output "db_endpoint" {
+  value = aws_db_instance.oms-db.endpoint
+}
