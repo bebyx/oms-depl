@@ -10,6 +10,15 @@ resource "aws_security_group" "oms-sg" {
     protocol = "tcp"
   }
 
+  ingress {
+    cidr_blocks = [
+      "0.0.0.0/0"
+    ]
+    from_port = 8181
+    to_port = 8181
+    protocol = "tcp"
+  }
+
   egress {
     from_port = 0
     to_port = 0
