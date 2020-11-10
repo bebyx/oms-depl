@@ -11,9 +11,20 @@ provider "aws" {
   region  = var.region
 }
 
+resource "tls_private_key" "oms-ssh" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "local_file" "key_file" {
+ content = tls_private_key.oms-ssh.private_key_pem
+ filename = aws_key_pair.oms-ssh.key_name
+ file_permission = 0400
+}
+
 resource "aws_key_pair" "oms-ssh" {
   key_name = "terraform"
-  public_key = file("~/.ssh/terraform.pub")
+  public_key = tls_private_key.oms-ssh.public_key_openssh
 }
 
 

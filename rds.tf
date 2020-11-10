@@ -5,7 +5,7 @@ resource "aws_db_instance" "oms-db" {
   instance_class = "db.t2.micro"
   identifier = "omsdb"
   username = "oms"
-  password = "password"
+  password = random_password.rds-password.result
   multi_az = false
   skip_final_snapshot  = true
   db_subnet_group_name = aws_db_subnet_group.oms-db.id
@@ -26,4 +26,11 @@ resource "aws_db_parameter_group" "oms-db" {
     name  = "character_set_client"
     value = "utf8"
   }
+}
+
+
+resource "random_password" "rds-password" {
+  length = 16
+  special = true
+  override_special = "_%"
 }

@@ -48,16 +48,16 @@ sudo systemctl daemon-reload
 sudo systemctl start tomcat.service
 sudo systemctl enable tomcat.service
 
-echo "$DB_URL"
-
-mysql -u oms  -p"password" -h$DB_URL <<-EOF
+mysql -u oms  -p"$DB_PASS" -h$DB_URL <<-EOF
 CREATE DATABASE testdb DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
 CREATE DATABASE omsdb DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
 EOF
 
 git clone -q https://github.com/bebyx/oms.git
 sed -i "s|127.0.0.1|$DB_URL|"  ~/oms/src/test/resources/hibernate_test.cfg.xml
+sed -i "s|>password<|>$DB_PASS<|"  ~/oms/src/test/resources/hibernate_test.cfg.xml
 sed -i "s|localhost|$DB_URL|"  ~/oms/src/main/webapp/WEB-INF/hibernate.cfg.xml
+sed -i "s|>password<|>$DB_PASS<|"  ~/oms/src/main/webapp/WEB-INF/hibernate.cfg.xml
 
 mvn -f ~/oms/pom.xml clean package
 sudo cp ~/oms/target/OMS.war /usr/local/tomcat9/webapps/
@@ -65,4 +65,4 @@ sudo chown tomcat:tomcat /usr/local/tomcat9/webapps/OMS.war
 
 sudo systemctl restart tomcat.service
 sleep 10
-mysql -u oms -p"password" -h$DB_URL omsdb < oms/scripts/addDataMySql.sql
+mysql -u oms -p"$DB_PASS" -h$DB_URL omsdb < oms/scripts/addDataMySql.sql

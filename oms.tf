@@ -17,7 +17,7 @@ resource "null_resource" "provision" {
   connection {
     type = "ssh"
     user = "ec2-user"
-    private_key = file("~/.ssh/terraform")
+    private_key = tls_private_key.oms-ssh.private_key_pem
     host = aws_eip.ip-oms.public_ip
   }
 
@@ -29,7 +29,7 @@ resource "null_resource" "provision" {
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/provision.sh",
-      "DB_URL=${aws_db_instance.oms-db.address} /tmp/provision.sh"
+      "env DB_URL=${aws_db_instance.oms-db.address} DB_PASS=${random_password.rds-password.result} /tmp/provision.sh"
     ]
   }
 
