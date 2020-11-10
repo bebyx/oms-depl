@@ -1,10 +1,10 @@
 resource "aws_db_instance" "oms-db" {
   allocated_storage = 100
   storage_type = "gp2"
-  engine = "mysql"
+  engine = "mariadb"
   instance_class = "db.t2.micro"
   identifier = "omsdb"
-  username = "root"
+  username = "oms"
   password = "password"
   multi_az = false
   skip_final_snapshot  = true
@@ -15,7 +15,7 @@ resource "aws_db_instance" "oms-db" {
 
 resource "aws_db_parameter_group" "oms-db" {
   name   = "rds-pg"
-  family = "mysql8.0"
+  family = "mariadb10.4"
 
   parameter {
     name  = "character_set_server"

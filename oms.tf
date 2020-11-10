@@ -21,7 +21,18 @@ resource "null_resource" "provision" {
     host = aws_eip.ip-oms.public_ip
   }
 
-  provisioner "remote-exec" {
-    script = "./provision.sh"
+  provisioner "file" {
+    source = "./provision.sh"
+    destination = "/tmp/provision.sh"
   }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/provision.sh",
+      "DB_URL=${aws_db_instance.oms-db.address} /tmp/provision.sh"
+    ]
+  }
+
+  depends_on = [ aws_db_instance.oms-db ]
+
 }
