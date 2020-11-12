@@ -16,9 +16,9 @@ resource "tls_private_key" "oms-ssh" {
   rsa_bits  = 4096
 }
 
-resource "local_file" "key_file" {
+resource "local_file" "key-file" {
  content = tls_private_key.oms-ssh.private_key_pem
- filename = aws_key_pair.oms-ssh.key_name
+ filename = "${aws_key_pair.oms-ssh.key_name}.pem"
  file_permission = 0400
 }
 
@@ -48,14 +48,18 @@ data "aws_ami" "redhat-linux-8" {
 }
 
 
-output "public_ip" {
+output "ip-jenkins" {
+  value = aws_eip.ip-jenkins.public_ip
+}
+
+output "ip-oms" {
   value = aws_eip.ip-oms.public_ip
 }
 
-output "private_ip" {
+output "private-oms" {
   value = aws_instance.oms.private_ip
 }
 
-output "db_endpoint" {
+output "db-endpoint" {
   value = aws_db_instance.oms-db.endpoint
 }

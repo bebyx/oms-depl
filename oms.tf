@@ -1,6 +1,7 @@
 resource "aws_instance" "oms" {
-  ami           = data.aws_ami.redhat-linux-8.id
+  ami = data.aws_ami.redhat-linux-8.id
   instance_type = "t2.micro"
+  private_ip = "10.0.1.12"
 
   key_name = aws_key_pair.oms-ssh.key_name
 
@@ -33,6 +34,6 @@ resource "null_resource" "provision" {
     ]
   }
 
-  depends_on = [ aws_db_instance.oms-db ]
+  depends_on = [ aws_instance.oms, aws_db_instance.oms-db ]
 
 }
