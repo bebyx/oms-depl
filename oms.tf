@@ -14,26 +14,24 @@ resource "aws_instance" "oms" {
 
 }
 
-resource "null_resource" "provision" {
-  connection {
-    type = "ssh"
-    user = "ec2-user"
-    private_key = tls_private_key.oms-ssh.private_key_pem
-    host = aws_eip.ip-oms.public_ip
-  }
-
-  provisioner "file" {
-    source = "./provision.sh"
-    destination = "/tmp/provision.sh"
-  }
-
+resource "null_resource" "ansible" {
   provisioner "remote-exec" {
-    inline = [
-      "chmod +x /tmp/provision.sh",
-      "env DB_URL=${aws_db_instance.oms-db.address} DB_PASS=${random_password.rds-password.result} /tmp/provision.sh"
-    ]
+    inline = ["echo 'Definitely connected!'"]
+    connection {
+      type = "ssh"
+      user = "ec2-user"
+      private_key = tls_private_key.oms-ssh.private_key_pem
+      host = aws_eip.ip-oms.public_ip
+    }
+  }
+
+  provisioner "local-exec" {
+    command = "awk 'NR == 5 {gsub(\"\\\\S+\",\"${aws_eip.ip-oms.public_ip}:\")}; {print}' ansible/hosts.yaml > ansible/hosts.yaml.new && mv ansible/hosts.yaml.new ansible/hosts.yaml"
+  }
+
+  provisioner "local-exec" {
+    command = "ansible-playbook ./ansible/playbook.yaml -i ./ansible/hosts.yaml --ssh-common-args='-o StrictHostKeyChecking=no' -e 'db_url=${aws_db_instance.oms-db.address} db_pass=${random_password.rds-password.result}'"
   }
 
   depends_on = [ aws_instance.oms, aws_db_instance.oms-db ]
-
 }

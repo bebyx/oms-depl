@@ -1,0 +1,8 @@
+all:
+  children:
+    omsservers:
+      hosts:
+        18.198.157.24:
+      vars:
+        ansible_user: ec2-user
+        ansible_ssh_private_key_file: ./terraform.pem
