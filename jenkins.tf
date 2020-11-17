@@ -1,6 +1,6 @@
 resource "aws_instance" "jenkins" {
   ami = data.aws_ami.redhat-linux-8.id
-  instance_type = "t2.micro"
+  instance_type = "t2.small"
   private_ip = "10.0.1.13"
 
   key_name = aws_key_pair.oms-ssh.key_name
