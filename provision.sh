@@ -64,5 +64,5 @@ sudo cp ~/oms/target/OMS.war /usr/local/tomcat9/webapps/
 sudo chown tomcat:tomcat /usr/local/tomcat9/webapps/OMS.war
 
 sudo systemctl restart tomcat.service
-sleep 10
+sleep 20
 mysql -u oms -p"$DB_PASS" -h$DB_URL omsdb < oms/scripts/addDataMySql.sql
